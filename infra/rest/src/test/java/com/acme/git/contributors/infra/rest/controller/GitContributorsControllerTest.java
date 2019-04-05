@@ -6,5 +6,7 @@ public class GitContributorsControllerTest {
     @Test
     public void getContributors()
     {
+        GitContributorsController gitContributorsController = new GitContributorsRestController();
+        gitContributorsController.getContributors();
     }
 }
