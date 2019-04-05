@@ -9,11 +9,15 @@ import java.util.List;
 
 @RestController
 public class GitContributorsRestController implements GitContributorsController {
+    private GitContributorsApplication gitContributorsApp;
+
+    public GitContributorsRestController(GitContributorsApplication gitContributorsApp) {
+        this.gitContributorsApp = gitContributorsApp;
+    }
 
     @Override
     @GetMapping(value = "/contributors")
     public List<Object> getContributors(@RequestParam String city) {
-        GitContributorsApplication gitContributorsApp = new GitContributorsApplication();
         return gitContributorsApp.getContributors();
     }
 }
