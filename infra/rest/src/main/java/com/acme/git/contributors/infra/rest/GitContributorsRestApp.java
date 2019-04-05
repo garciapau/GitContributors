@@ -6,10 +6,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan({"com.acme.git.contributors.infra.rest.controller"})
-public class GitContributorsApplication {
+public class GitContributorsRestApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(GitContributorsApplication.class, args);
+        SpringApplication.run(GitContributorsRestApp.class, args);
     }
 
 }
