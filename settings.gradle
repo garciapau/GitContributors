@@ -1,0 +1,4 @@
+rootProject.name = 'contributors'
+include 'infra:rest'
+findProject(':infra:rest')?.name = 'rest'
+
