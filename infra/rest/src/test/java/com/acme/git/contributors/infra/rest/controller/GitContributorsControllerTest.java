@@ -19,8 +19,15 @@ public class GitContributorsControllerTest {
 
     @Test
     public void whenCallToGetContributors_shouldReturnHttpStatusOk() throws Exception {
-        mockMvc.perform(get("/contributors")
+        mockMvc.perform(get(String.format("/contributors?city=%s", "Barcelona"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenCallToGetContributorsWithoutCity_shouldReturnHttpStatusBadRequest() throws Exception {
+        mockMvc.perform(get("/contributors")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
