@@ -1,16 +1,12 @@
-plugins {
-    id 'java'
-}
-
-group = 'com.acme.git.contributors'
-version '0.0.1-SNAPSHOT'
-
-sourceCompatibility = 1.8
+apply plugin: 'java'
+apply plugin: 'java-library'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile("junit:junit:${junit_version}")
+    testImplementation("info.cukes:cucumber-java8:${cucumber_version}")
+    testImplementation("info.cukes:cucumber-junit:${cucumber_version}")
+    testImplementation("org.mockito:mockito-core:${mockito_version}")
 }

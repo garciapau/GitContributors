@@ -1,4 +1,4 @@
-package com.acme.git.contributors.infra.rest;
+package com.acme.git.contributors.infra;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

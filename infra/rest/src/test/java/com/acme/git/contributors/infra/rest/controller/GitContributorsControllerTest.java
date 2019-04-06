@@ -1,6 +1,6 @@
 package com.acme.git.contributors.infra.rest.controller;
 
-import com.acme.git.contributors.application.usecase.ObtainContributorsByCity;
+import com.acme.git.contributors.application.feature.ObtainContributorsByCity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
