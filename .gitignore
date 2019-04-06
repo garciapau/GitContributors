@@ -1,6 +1,7 @@
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+out/
 
 # Compiled class file
 *.class
@@ -22,4 +23,5 @@
 *.iws
 *.iml
 *.ipr
-/out/
+
+
