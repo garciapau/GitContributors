@@ -28,15 +28,13 @@ public class GitContributorsControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(new GitContributorsRestController(gitContributorsApplication))
-                .build();
+        mockMvc = MockMvcBuilders.standaloneSetup(gitContributorsRestController).build();
     }
 
     @Test
     public void whenCallToGetContributors_shouldReturnHttpStatusOk() throws Exception {
         when(gitContributorsApplication.getContributors())
                 .thenReturn(new ArrayList<>());
-
         mockMvc.perform(get(String.format("/contributors?city=%s", "Barcelona"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

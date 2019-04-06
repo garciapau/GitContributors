@@ -17,6 +17,7 @@ Dependency Injection is used based on spring configuration classes.
 Gradle is used (including the wrapper)
 
 ## How to build and run the service
-The service has an embedded Tomcat server available at por 8080.
+The service has an embedded Tomcat server available at por ```8080```.
 To start the service, just type:
-./gradlew clean bootRun
+
+```./gradlew clean bootRun```
