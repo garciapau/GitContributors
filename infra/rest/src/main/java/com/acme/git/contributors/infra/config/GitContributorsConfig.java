@@ -1,6 +1,7 @@
 package com.acme.git.contributors.infra.config;
 
 import com.acme.git.contributors.application.feature.ObtainContributorsByCity;
+import com.acme.git.contributors.infra.remote.GitHubService;
 import com.acme.git.contributors.remote.GitService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class GitContributorsConfig {
     @Bean
     GitService gitService() {
-        // TODO
-        throw new UnsupportedOperationException();
+        return new GitHubService();
     }
 
     @Bean

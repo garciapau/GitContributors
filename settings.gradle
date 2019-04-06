@@ -1,3 +1,6 @@
 rootProject.name = 'contributors'
 include 'infra:rest'
 include 'application'
+include 'infra:remote'
+findProject(':infra:remote')?.name = 'remote'
+
