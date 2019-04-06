@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.acme.git'
+group = 'com.acme.git.contributors'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
