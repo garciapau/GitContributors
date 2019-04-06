@@ -1,6 +1,6 @@
 package com.acme.git.contributors.infra.rest.controller;
 
-import com.acme.git.contributors.application.GitContributorsApplication;
+import com.acme.git.contributors.application.usecase.ObtainContributorsByCity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +21,7 @@ public class GitContributorsControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    GitContributorsApplication gitContributorsApplication;
+    ObtainContributorsByCity obtainContributorsByCity;
 
     @InjectMocks
     GitContributorsRestController gitContributorsRestController;
@@ -33,7 +34,7 @@ public class GitContributorsControllerTest {
 
     @Test
     public void whenCallToGetContributors_shouldReturnHttpStatusOk() throws Exception {
-        when(gitContributorsApplication.getContributors())
+        when(obtainContributorsByCity.getContributors(any(String.class)))
                 .thenReturn(new ArrayList<>());
         mockMvc.perform(get(String.format("/contributors?city=%s", "Barcelona"))
                 .contentType(MediaType.APPLICATION_JSON))
