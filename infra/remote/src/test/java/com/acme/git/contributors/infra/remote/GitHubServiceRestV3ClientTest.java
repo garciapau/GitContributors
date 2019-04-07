@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -36,7 +38,9 @@ public class GitHubServiceRestV3ClientTest {
 
     @Test
     public void whenCallToGetContributorsByCity_shouldReturnTheTop50Users() throws IOException {
-        when(restTemplate.getForEntity(any(String.class), eq(JsonNode.class))).thenReturn(buildMockGitResponseWithUsers(93));
+        //when(restTemplate.getForEntity(any(String.class), eq(JsonNode.class))).thenReturn(buildMockGitResponseWithUsers(93));
+        when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
+                .thenReturn(buildMockGitResponseWithUsers(50));
 
         List<Contributor> contributors = gitServiceClient.getContributorsByCity("Barcelona");
         Assert.assertFalse(contributors.isEmpty());
@@ -45,7 +49,8 @@ public class GitHubServiceRestV3ClientTest {
 
     @Test
     public void whenCallToGetContributorsByWrongCity_shouldReturnNoUsers() throws IOException {
-        when(restTemplate.getForEntity(any(String.class), eq(JsonNode.class))).thenReturn(buildMockGitResponseWithUsers(0));
+        when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
+            .thenReturn(buildMockGitResponseWithUsers(0));
 
         List<Contributor> contributors = gitServiceClient.getContributorsByCity("WrongCity");
         Assert.assertTrue(contributors.isEmpty());
