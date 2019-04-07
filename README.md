@@ -37,3 +37,6 @@ To test the service, just type:
 To start the service, just type:
 
 ```./gradlew clean bootRun```
+
+## 3rd Party services constraints/SLAs
+The Github Search API has a custom rate limit. For requests using Basic Authentication, OAuth, or client ID and secret, you can make up to 30 requests per minute. For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.

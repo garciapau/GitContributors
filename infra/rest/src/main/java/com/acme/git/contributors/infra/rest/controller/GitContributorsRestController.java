@@ -1,7 +1,9 @@
 package com.acme.git.contributors.infra.rest.controller;
 
+import com.acme.git.contributors.application.domain.Contributor;
 import com.acme.git.contributors.application.feature.ObtainContributorsByCity;
 import com.acme.git.contributors.infra.rest.contract.GitContributorsController;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,8 @@ public class GitContributorsRestController implements GitContributorsController 
 
     @Override
     @GetMapping(value = "/contributors")
-    public List<Object> getContributors(@RequestParam String city) {
-        return obtainContributorsByCity.getContributors(city);
+    public ResponseEntity<List<Contributor>> getContributors(@RequestParam String city) {
+        List<Contributor> contributors = obtainContributorsByCity.getContributors(city);
+        return ResponseEntity.ok(contributors);
     }
 }

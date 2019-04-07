@@ -1,20 +1,25 @@
 package com.acme.git.contributors.infra.config;
 
 import com.acme.git.contributors.application.feature.ObtainContributorsByCity;
-import com.acme.git.contributors.infra.remote.GitHubService;
-import com.acme.git.contributors.remote.GitService;
+import com.acme.git.contributors.infra.remote.GitHubServiceRestV3Client;
+import com.acme.git.contributors.remote.GitServiceClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class GitContributorsConfig {
     @Bean
-    GitService gitService() {
-        return new GitHubService();
+    RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+    @Bean
+    GitServiceClient gitService(RestTemplate restTemplate) {
+        return new GitHubServiceRestV3Client(restTemplate);
     }
 
     @Bean
-    ObtainContributorsByCity gitContributorsApplication(GitService gitService) {
-        return new ObtainContributorsByCity(gitService);
+    ObtainContributorsByCity gitContributorsApplication(GitServiceClient gitServiceClient) {
+        return new ObtainContributorsByCity(gitServiceClient);
     }
 }

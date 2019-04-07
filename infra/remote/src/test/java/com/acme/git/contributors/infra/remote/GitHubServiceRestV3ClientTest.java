@@ -1,0 +1,61 @@
+package com.acme.git.contributors.infra.remote;
+
+import com.acme.git.contributors.application.domain.Contributor;
+import com.acme.git.contributors.remote.GitServiceClient;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+
+public class GitHubServiceRestV3ClientTest {
+    private static final String gitHubSearchUrl = "https://api.github.com/search/users?q=type:user+location:Barcelona&page=1&per_page=50&sort=repositories&order=desc";
+    private GitServiceClient gitServiceClient;
+    private RestTemplate restTemplate;
+
+    @Before
+    public void setUp() {
+        restTemplate = Mockito.mock(RestTemplate.class);
+        gitServiceClient = new GitHubServiceRestV3Client(restTemplate);
+        // Using reflection test util to avoid SpringRunner for a unit test
+        ReflectionTestUtils.setField(gitServiceClient, "githubUrl", gitHubSearchUrl);
+    }
+
+    @Test
+    public void whenCallToGetContributorsByCity_shouldReturnTheTop50Users() throws IOException {
+        when(restTemplate.getForEntity(any(String.class), eq(JsonNode.class))).thenReturn(buildMockGitResponseWithUsers(93));
+
+        List<Contributor> contributors = gitServiceClient.getContributorsByCity("Barcelona");
+        Assert.assertFalse(contributors.isEmpty());
+        Assert.assertEquals(50, contributors.size());
+    }
+
+    @Test
+    public void whenCallToGetContributorsByWrongCity_shouldReturnNoUsers() throws IOException {
+        when(restTemplate.getForEntity(any(String.class), eq(JsonNode.class))).thenReturn(buildMockGitResponseWithUsers(0));
+
+        List<Contributor> contributors = gitServiceClient.getContributorsByCity("WrongCity");
+        Assert.assertTrue(contributors.isEmpty());
+        Assert.assertEquals(0, contributors.size());
+    }
+
+    private ResponseEntity<JsonNode> buildMockGitResponseWithUsers(int numberOfUsers) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        InputStream is = Test.class.getResourceAsStream(String.format("/jsonMockResponses/mockResponseWith%dUsers.json", numberOfUsers));
+        JsonNode mockResponse = mapper.readTree(is);
+        return new ResponseEntity<>(mockResponse, HttpStatus.OK);
+    }
+}
