@@ -21,9 +21,20 @@ to encapsulate different components, therefore the solution is divided in gradle
 ```:application``` Contains the business logic (features) and the application adapters as interfaces. 
 The goal is to keep this module as much decoupled as possible, only using Java 8 standard library.
 
-Tests are configured using Cucumber and based on the Application Features.
+Tests are configured using Cucumber based on the Application Features, which can be summarized as:
+  Scenario: Retrieve GitHub contributors by city
+    Given a Github service API
+    When user requests contributors of city 'A' and a maximum of results of '{50, 100 or 150}'
+    Then a list of top contributors ia returned sorted by number of repositories (descendant)
 
-```:infra``` Contains infrastructure application (based on Spring) and a module per each port (HTTP endpoint, remote service, persistence, etc.)
+Cucumber is addressed to Functional/Acceptance testing, covering the whole application. I've defined it to cover 
+the business logic, located in the ```:application``` module, where the features are isolated.
+In our case, Cucumber's definition looks like unitary tests when it isn't because:
+ - We are leaving both REST ports testing out of its scope: Our own endpoint and the client to external service, which is mocked. 
+ - Application logic remains quite simple.
+
+```:infra``` Contains infrastructure application (based on Spring) and a module per each port (HTTP endpoint, 
+remote service, persistence, etc.)
 
 By infrastructure application, I mean the embedded (Tomcat) server managed by Spring Boot. 
 I've considered the option of isolating the infrastructure application into a separate module 
