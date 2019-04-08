@@ -1,6 +1,7 @@
 package com.acme.git.contributors.infra.remote;
 
 import com.acme.git.contributors.application.domain.Contributor;
+import com.acme.git.contributors.application.exception.APIRateLimitExceededException;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,16 +33,14 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
     }
 
     @Override
-    public List<Contributor> getContributorsByCity(String city) {
-        List<Contributor> contributorList = new ArrayList<>();
+    public List<Contributor> getContributorsByCity(String city) throws APIRateLimitExceededException {
         ResponseEntity<JsonNode> response = callGithubService(city);
         if (response.getStatusCode().equals(HttpStatus.OK))
         {
             return parseResponseIntoContributorsList(response);
         } else {
-//            TODO throw new Exception(response.getStatusCode().getReasonPhrase());
+            throw new APIRateLimitExceededException(response.getStatusCode().getReasonPhrase());
         }
-        return contributorList;
     }
 
     private List<Contributor> parseResponseIntoContributorsList(ResponseEntity<JsonNode> response) {
