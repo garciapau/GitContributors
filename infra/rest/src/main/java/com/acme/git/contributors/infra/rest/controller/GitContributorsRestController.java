@@ -2,6 +2,7 @@ package com.acme.git.contributors.infra.rest.controller;
 
 import com.acme.git.contributors.application.domain.Contributor;
 import com.acme.git.contributors.application.exception.APIRateLimitExceededException;
+import com.acme.git.contributors.application.exception.IncorrectValuesException;
 import com.acme.git.contributors.application.feature.ObtainContributorsByCity;
 import com.acme.git.contributors.infra.rest.contract.GitContributorsController;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,9 @@ public class GitContributorsRestController implements GitContributorsController 
 
     @Override
     @GetMapping(value = "/contributors")
-    public ResponseEntity<List<Contributor>> getContributors(@RequestParam String city) throws APIRateLimitExceededException {
-        List<Contributor> contributors = obtainContributorsByCity.getContributors(city);
+    public ResponseEntity<List<Contributor>> getContributors(@RequestParam String city, @RequestParam Integer top)
+            throws APIRateLimitExceededException, IncorrectValuesException {
+        List<Contributor> contributors = obtainContributorsByCity.getContributors(city, top);
         return ResponseEntity.ok(contributors);
     }
 }

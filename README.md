@@ -24,7 +24,7 @@ The goal is to keep this module as much decoupled as possible, only using Java 8
 Tests are configured using Cucumber based on the Application Features, which can be summarized as:
   Scenario: Retrieve GitHub contributors by city
     Given a Github service API
-    When user requests contributors of city 'A' and a maximum of results of '{50, 100 or 150}'
+    When user requests top {50, 100 or 150} contributors of city 'A'
     Then a list of top contributors ia returned sorted by number of repositories (descendant)
 
 Cucumber is addressed to Functional/Acceptance testing, covering the whole application. I've defined it to cover 
@@ -75,9 +75,14 @@ To start the service, just type:
 ## 3rd Party services constraints/SLAs
 ### Overall Github API Rate limits
 
-For API requests using Basic Authentication or OAuth, you can make up to 5000 requests per hour. Authenticated requests are associated with the authenticated user, regardless of whether Basic Authentication or an OAuth token was used. This means that all OAuth applications authorized by a user share the same quota of 5000 requests per hour when they authenticate with different tokens owned by the same user.
+For API requests using Basic Authentication or OAuth, you can make up to 5000 requests per hour. Authenticated requests 
+are associated with the authenticated user, regardless of whether Basic Authentication or an OAuth token was used. 
+This means that all OAuth applications authorized by a user share the same quota of 5000 requests per hour 
+when they authenticate with different tokens owned by the same user.
 
-For unauthenticated requests, the rate limit allows for up to 60 requests per hour. Unauthenticated requests are associated with the originating IP address, and not the user making requests.
+For unauthenticated requests, the rate limit allows for up to 60 requests per hour. 
+Unauthenticated requests are associated with the originating IP address, and not the user making requests.
+Search API returns maximum 100 results per page
 
 ### Specific Rate limit for Github search API
 

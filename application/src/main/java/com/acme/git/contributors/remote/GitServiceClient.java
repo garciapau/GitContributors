@@ -6,5 +6,5 @@ import com.acme.git.contributors.application.exception.APIRateLimitExceededExcep
 import java.util.List;
 
 public interface GitServiceClient {
-    List<Contributor> getContributorsByCity(String city) throws APIRateLimitExceededException;
+    List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults) throws APIRateLimitExceededException;
 }

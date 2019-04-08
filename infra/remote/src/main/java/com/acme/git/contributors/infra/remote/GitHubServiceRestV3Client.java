@@ -9,7 +9,6 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,8 +32,8 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
     }
 
     @Override
-    public List<Contributor> getContributorsByCity(String city) throws APIRateLimitExceededException {
-        ResponseEntity<JsonNode> response = callGithubService(city);
+    public List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults) throws APIRateLimitExceededException {
+        ResponseEntity<JsonNode> response = callGithubService(city, initialPage, maxResults);
         if (response.getStatusCode().equals(HttpStatus.OK))
         {
             return parseResponseIntoContributorsList(response);
@@ -52,9 +51,9 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
         return contributorList;
     }
 
-    private ResponseEntity<JsonNode> callGithubService(String city) {
+    private ResponseEntity<JsonNode> callGithubService(String city, Integer initialPage, Integer maxResults) {
         HttpHeaders headers = buildHttpHeaders();
-        UriComponentsBuilder uriWithQueryParamsBuilder = buildUriWithParams(city);
+        UriComponentsBuilder uriWithQueryParamsBuilder = buildUriWithParams(city, initialPage, maxResults);
         return restTemplate.exchange(
                 uriWithQueryParamsBuilder.toUriString(),
                 HttpMethod.GET,
@@ -62,11 +61,11 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
                 JsonNode.class);
     }
 
-    private UriComponentsBuilder buildUriWithParams(String city) {
+    private UriComponentsBuilder buildUriWithParams(String city, Integer initialPage, Integer maxResults) {
         return UriComponentsBuilder.fromHttpUrl(githubUrl)
                     .queryParam("q", String.format("type:%s+location:%s", TYPE_USER, city))
-                    .queryParam("page", INITIAL_PAGE)
-                    .queryParam("per_page", MAX_USERS_PER_PAGE)
+                    .queryParam("page", initialPage)
+                    .queryParam("per_page", maxResults)
                     .queryParam("sort", SORTED_BY_REPOSITORIES)
                     .queryParam("order", SORTED_DESC);
     }

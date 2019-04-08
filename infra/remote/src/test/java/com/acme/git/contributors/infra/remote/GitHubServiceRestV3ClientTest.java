@@ -39,11 +39,10 @@ public class GitHubServiceRestV3ClientTest {
 
     @Test
     public void whenCallToGetContributorsByCity_shouldReturnTheTop50Users() throws IOException, APIRateLimitExceededException {
-        //when(restTemplate.getForEntity(any(String.class), eq(JsonNode.class))).thenReturn(buildMockGitResponseWithUsers(93));
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(buildMockGitResponseWithUsers(50));
 
-        List<Contributor> contributors = gitServiceClient.getContributorsByCity("Barcelona");
+        List<Contributor> contributors = gitServiceClient.getContributorsByCity("Barcelona", 1, 50);
         Assert.assertFalse(contributors.isEmpty());
         Assert.assertEquals(50, contributors.size());
     }
@@ -53,7 +52,7 @@ public class GitHubServiceRestV3ClientTest {
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
             .thenReturn(buildMockGitResponseWithUsers(0));
 
-        List<Contributor> contributors = gitServiceClient.getContributorsByCity("WrongCity");
+        List<Contributor> contributors = gitServiceClient.getContributorsByCity("WrongCity", 1, 50);
         Assert.assertTrue(contributors.isEmpty());
         Assert.assertEquals(0, contributors.size());
     }
@@ -63,7 +62,7 @@ public class GitHubServiceRestV3ClientTest {
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
             .thenReturn(buildMockGitResponseRateLimitExceeded());
 
-        List<Contributor> contributors = gitServiceClient.getContributorsByCity("AnyCity");
+        List<Contributor> contributors = gitServiceClient.getContributorsByCity("AnyCity", 1, 50);
         Assert.fail();
     }
 

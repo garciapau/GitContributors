@@ -1,6 +1,11 @@
 Feature: Retrieve git contributors
 
-  Scenario: Retrieve GitHub contributors by city
+  Scenario: Retrieve 50 GitHub contributors by city
     Given a Github service API
-    When user requests contributors of city 'Barcelona'
-    Then a list of contributors is returned
+    When user requests top 50 contributors of city 'Barcelona'
+    Then the 50 contributors with more repositories are returned
+
+  Scenario: Retrieve 150 GitHub contributors by city
+    Given a Github service API
+    When user requests top 150 contributors of city 'Barcelona'
+    Then the 150 contributors with more repositories are returned
