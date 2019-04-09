@@ -87,3 +87,4 @@ Search API returns maximum 100 results per page
 ### Specific Rate limit for Github search API
 
 The Github Search API has a custom rate limit. For requests using Basic Authentication, OAuth, or client ID and secret, you can make up to 30 requests per minute. For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.
+

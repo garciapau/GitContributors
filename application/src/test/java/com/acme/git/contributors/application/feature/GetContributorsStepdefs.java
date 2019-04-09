@@ -25,16 +25,12 @@ public class GetContributorsStepdefs implements En {
     public GetContributorsStepdefs() {
         Before(() ->{
             gitServiceClient = Mockito.mock(GitServiceClient.class);
-            try {
-                Mockito.when(gitServiceClient.getContributorsByCity(any(String.class), eq(1), eq(50)))
-                        .thenReturn(buildMockContributors(50));
-                Mockito.when(gitServiceClient.getContributorsByCity(any(String.class), eq(1), eq(100)))
-                        .thenReturn(buildMockContributors(100));
-                Mockito.when(gitServiceClient.getContributorsByCity(any(String.class), eq(2), eq(50)))
-                        .thenReturn(buildMockContributors(50));
-            } catch (APIRateLimitExceededException e) {
-                Assert.fail();
-            }
+            Mockito.when(gitServiceClient.getContributorsByCity(any(String.class), eq(1), eq(50)))
+                    .thenReturn(buildMockContributors(50));
+            Mockito.when(gitServiceClient.getContributorsByCity(any(String.class), eq(1), eq(100)))
+                    .thenReturn(buildMockContributors(100));
+            Mockito.when(gitServiceClient.getContributorsByCity(any(String.class), eq(2), eq(50)))
+                    .thenReturn(buildMockContributors(50));
         });
 
         Given("^a Github service API$", () -> {
@@ -43,7 +39,7 @@ public class GetContributorsStepdefs implements En {
         When("^user requests top (\\d+) contributors of city '(.*)'$", (Integer top, String city) -> {
             try {
                 contributors = obtainContributorsByCity.getContributors(city, top);
-            } catch (APIRateLimitExceededException | IncorrectValuesException e) {
+            } catch (IncorrectValuesException e) {
                 Assert.fail();
             }
         });

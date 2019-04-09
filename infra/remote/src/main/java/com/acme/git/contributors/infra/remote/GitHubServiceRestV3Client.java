@@ -6,6 +6,7 @@ import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,14 +33,8 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
     }
 
     @Override
-    public List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults) throws APIRateLimitExceededException {
-        ResponseEntity<JsonNode> response = callGithubService(city, initialPage, maxResults);
-        if (response.getStatusCode().equals(HttpStatus.OK))
-        {
-            return parseResponseIntoContributorsList(response);
-        } else {
-            throw new APIRateLimitExceededException(response.getStatusCode().getReasonPhrase());
-        }
+    public List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults) {
+        return parseResponseIntoContributorsList(callGithubService(city, initialPage, maxResults));
     }
 
     private List<Contributor> parseResponseIntoContributorsList(ResponseEntity<JsonNode> response) {
@@ -51,7 +46,8 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
         return contributorList;
     }
 
-    private ResponseEntity<JsonNode> callGithubService(String city, Integer initialPage, Integer maxResults) {
+    private ResponseEntity<JsonNode> callGithubService(String city, Integer initialPage, Integer maxResults)
+            throws RestClientException {
         HttpHeaders headers = buildHttpHeaders();
         UriComponentsBuilder uriWithQueryParamsBuilder = buildUriWithParams(city, initialPage, maxResults);
         return restTemplate.exchange(
@@ -63,11 +59,11 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
 
     private UriComponentsBuilder buildUriWithParams(String city, Integer initialPage, Integer maxResults) {
         return UriComponentsBuilder.fromHttpUrl(githubUrl)
-                    .queryParam("q", String.format("type:%s+location:%s", TYPE_USER, city))
-                    .queryParam("page", initialPage)
-                    .queryParam("per_page", maxResults)
-                    .queryParam("sort", SORTED_BY_REPOSITORIES)
-                    .queryParam("order", SORTED_DESC);
+                .queryParam("q", String.format("type:%s+location:%s", TYPE_USER, city))
+                .queryParam("page", initialPage)
+                .queryParam("per_page", maxResults)
+                .queryParam("sort", SORTED_BY_REPOSITORIES)
+                .queryParam("order", SORTED_DESC);
     }
 
     private HttpHeaders buildHttpHeaders() {

@@ -19,5 +19,5 @@ public interface GitContributorsController {
             @ApiResponse(code = 200, message = "Success", response = List.class),
             @ApiResponse(code = 204, message = "City not found", response = String.class),
             @ApiResponse(code = 400, message = "Request not properly formed", response = String.class)})
-    ResponseEntity<List<Contributor>> getContributors(String city, Integer top) throws APIRateLimitExceededException, IncorrectValuesException;
+    ResponseEntity<List<Contributor>> getContributors(String city, Integer top) throws IncorrectValuesException;
 }

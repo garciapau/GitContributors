@@ -1,7 +1,6 @@
 package com.acme.git.contributors.infra.remote;
 
 import com.acme.git.contributors.application.domain.Contributor;
-import com.acme.git.contributors.application.exception.APIRateLimitExceededException;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +37,7 @@ public class GitHubServiceRestV3ClientTest {
     }
 
     @Test
-    public void whenCallToGetContributorsByCity_shouldReturnTheTop50Users() throws IOException, APIRateLimitExceededException {
+    public void whenCallToGetContributorsByCity_shouldReturnTheTop50Users() throws IOException {
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(buildMockGitResponseWithUsers(50));
 
@@ -48,22 +47,13 @@ public class GitHubServiceRestV3ClientTest {
     }
 
     @Test
-    public void whenCallToGetContributorsByWrongCity_shouldReturnNoUsers() throws IOException, APIRateLimitExceededException {
+    public void whenCallToGetContributorsByWrongCity_shouldReturnNoUsers() throws IOException {
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
             .thenReturn(buildMockGitResponseWithUsers(0));
 
         List<Contributor> contributors = gitServiceClient.getContributorsByCity("WrongCity", 1, 50);
         Assert.assertTrue(contributors.isEmpty());
         Assert.assertEquals(0, contributors.size());
-    }
-
-    @Test(expected = APIRateLimitExceededException.class)
-    public void whenCallToGetContributorsElevenTimes_shouldThrowApiRateLimitExceeded() throws IOException, APIRateLimitExceededException {
-        when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
-            .thenReturn(buildMockGitResponseRateLimitExceeded());
-
-        List<Contributor> contributors = gitServiceClient.getContributorsByCity("AnyCity", 1, 50);
-        Assert.fail();
     }
 
     private ResponseEntity<JsonNode> buildMockGitResponseRateLimitExceeded() throws IOException {

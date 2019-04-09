@@ -14,7 +14,7 @@ public class ObtainContributorsByCity {
         this.gitServiceClient = gitServiceClient;
     }
 
-    public List<Contributor> getContributors(String city, Integer top) throws APIRateLimitExceededException, IncorrectValuesException {
+    public List<Contributor> getContributors(String city, Integer top) throws IncorrectValuesException {
         if (top == 50 || top == 100) return gitServiceClient.getContributorsByCity(city, 1, top);
         else if (top == 150) {
             List<Contributor> contributorsByCity = gitServiceClient.getContributorsByCity(city, 1, 100);

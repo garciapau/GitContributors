@@ -23,7 +23,7 @@ public class GitContributorsRestController implements GitContributorsController 
     @Override
     @GetMapping(value = "/contributors")
     public ResponseEntity<List<Contributor>> getContributors(@RequestParam String city, @RequestParam Integer top)
-            throws APIRateLimitExceededException, IncorrectValuesException {
+            throws IncorrectValuesException {
         List<Contributor> contributors = obtainContributorsByCity.getContributors(city, top);
         return ResponseEntity.ok(contributors);
     }
