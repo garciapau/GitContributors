@@ -1,6 +1,18 @@
 # Git Contributors
 Service that returns a list of the top contributors
 
+
+
+## Out of the scope / TODO
+Environment specific configuration
+Service clustering
+Authentication (Basic Authentication, OAuth...)
+Integration Test
+Stress Test
+Constants and literals are defined in the same class where they are used
+
+
+
 ## Description
 Given a city name (e.g. Barcelona) the service returns a list of the top contributors
 (sorted by number of repositories) in GitHub

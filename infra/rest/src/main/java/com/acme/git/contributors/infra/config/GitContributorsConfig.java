@@ -5,10 +5,8 @@ import com.acme.git.contributors.infra.cache.repository.InMemoryContributorCache
 import com.acme.git.contributors.infra.cache.repository.InMemoryContributorRepository;
 import com.acme.git.contributors.infra.remote.GitHubServiceRestV3Client;
 import com.acme.git.contributors.remote.GitServiceClient;
-import org.h2.server.web.WebServlet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -39,15 +37,5 @@ public class GitContributorsConfig {
     @Bean
     ObtainContributorsByCity gitContributorsApplication(GitServiceClient gitServiceClient) {
         return new ObtainContributorsByCity(gitServiceClient);
-    }
-
-    @Bean
-    WebServlet webServlet() { return new WebServlet(); }
-
-    @Bean
-    public ServletRegistrationBean h2servletRegistration(WebServlet webServlet) {
-        ServletRegistrationBean registration = new ServletRegistrationBean(webServlet);
-        registration.addUrlMappings("/console/*");
-        return registration;
     }
 }
