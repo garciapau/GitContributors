@@ -16,6 +16,7 @@ dependencies {
     implementation("org.springframework:spring-context:${spring_framework_version}")
     implementation("com.fasterxml.jackson.core:jackson-databind:${jackson_version}")
     implementation project(':application')
+    implementation project(':infra:cache')
 
     testImplementation("org.springframework:spring-test:${spring_framework_version}")
     testImplementation("junit:junit:${junit_version}")

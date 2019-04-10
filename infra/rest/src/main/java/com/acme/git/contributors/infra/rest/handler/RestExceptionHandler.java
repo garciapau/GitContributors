@@ -2,7 +2,6 @@ package com.acme.git.contributors.infra.rest.handler;
 
 import com.acme.git.contributors.application.exception.IncorrectValuesException;
 import com.acme.git.contributors.infra.rest.model.ApiError;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -18,10 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @Autowired
-    public RestExceptionHandler() {
-    }
 
     @ExceptionHandler(IncorrectValuesException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -44,9 +39,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(HttpClientErrorException.NotFound.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<ApiError> handleRestClientException(HttpClientErrorException.NotFound ex) {
-
-//        InMemoryRepository.findById();
-
+        System.out.println("---- Fallback to Cache ----- ");
         ResponseEntity<ApiError> errorResponseEntity = ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .contentType(MediaType.APPLICATION_JSON)

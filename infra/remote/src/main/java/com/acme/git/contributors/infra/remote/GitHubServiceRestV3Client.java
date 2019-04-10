@@ -1,6 +1,7 @@
 package com.acme.git.contributors.infra.remote;
 
 import com.acme.git.contributors.application.domain.Contributor;
+import com.acme.git.contributors.infra.cache.repository.InMemoryContributorCache;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,14 +30,32 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
     @Value("${github.url}")
     private String githubUrl;
 
-    public GitHubServiceRestV3Client(RestTemplate restTemplate, String serviceUrl) {
+    private InMemoryContributorCache inMemoryContributorCache;
+
+    public GitHubServiceRestV3Client(RestTemplate restTemplate, String serviceUrl, InMemoryContributorCache inMemoryContributorCache) {
         this.restTemplate = restTemplate;
         this.githubUrl = serviceUrl;
+        this.inMemoryContributorCache = inMemoryContributorCache;
     }
 
     @Override
     public List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults) {
-        return parseResponseIntoContributorsList(callGithubService(city, initialPage, maxResults));
+        List<Contributor> contributors;
+        try {
+            contributors = parseResponseIntoContributorsList(callGithubService(city, initialPage, maxResults));
+            inMemoryContributorCache.saveContributorsOfCity(city, contributors);
+            return contributors;
+        } catch (RestClientException e) {
+            System.out.println(" -------- Looking for fallback......");
+            contributors = inMemoryContributorCache.getContributorsByCity(city);
+            if (contributors.isEmpty()) {
+                System.out.println(" -------- NOT found in cache -------");
+                throw e;
+            } else {
+                System.out.println(" -------- FOUND in cache -------");
+                return contributors;
+            }
+        }
     }
 
     private List<Contributor> parseResponseIntoContributorsList(ResponseEntity<JsonNode> response) {

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GitContributorsRestControllerTest {
     private static final String MESSAGE_API_RATE_LIMIT_EXCEEDED = "API rate limit exceeded. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)";
     private static final String MESSAGE_PREFIX_EXPEXTED_API_RATE_LIMIT_EXCEEDED = "API rate limit exceeded";
-    public static final String MESSAGE_TOP_INVALID = "Top must be any value from 50, 100 or 150";
+    private static final String MESSAGE_TOP_INVALID = "Top must be any value from 50, 100 or 150";
     private MockMvc mockMvc;
 
     @Mock

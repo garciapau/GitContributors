@@ -16,11 +16,13 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation("io.springfox:springfox-swagger-ui:${swagger_version}")
     implementation("io.springfox:springfox-swagger2:${swagger_version}")
 
     implementation project(':application')
     implementation project(':infra:remote')
+    implementation project(':infra:cache')
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

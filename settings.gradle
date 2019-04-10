@@ -2,5 +2,8 @@ rootProject.name = 'contributors'
 include 'infra:rest'
 include 'application'
 include 'infra:remote'
+include 'infra:cache'
 findProject(':infra:remote')?.name = 'remote'
+findProject(':infra:rest')?.name = 'rest'
+findProject(':infra:cache')?.name = 'cache'
 

@@ -1,6 +1,7 @@
 package com.acme.git.contributors.infra.remote;
 
 import com.acme.git.contributors.application.domain.Contributor;
+import com.acme.git.contributors.infra.cache.repository.InMemoryContributorCache;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +13,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -27,13 +27,13 @@ public class GitHubServiceRestV3ClientTest {
     private static final String gitHubSearchUrl = "https://api.github.com/search/users?q=type:user+location:Barcelona&page=1&per_page=50&sort=repositories&order=desc";
     private GitServiceClient gitServiceClient;
     private RestTemplate restTemplate;
+    private InMemoryContributorCache inMemoryContributorCache;
 
     @Before
     public void setUp() {
         restTemplate = Mockito.mock(RestTemplate.class);
-        gitServiceClient = new GitHubServiceRestV3Client(restTemplate, gitHubSearchUrl);
-        // Using reflection test util to avoid SpringRunner for a unit test
-//        ReflectionTestUtils.setField(gitServiceClient, "githubUrl", gitHubSearchUrl);
+        inMemoryContributorCache = Mockito.mock(InMemoryContributorCache.class);
+        gitServiceClient = new GitHubServiceRestV3Client(restTemplate, gitHubSearchUrl, inMemoryContributorCache);
     }
 
     @Test
