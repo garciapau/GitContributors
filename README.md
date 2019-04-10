@@ -62,6 +62,18 @@ In a real context, I would also explore GraphQL API v4, because it has clear ben
 and the API looks mature enough, since it was released more than two years ago 
 (https://github.blog/2016-09-14-the-github-graphql-api/)   
 
+### Service Reliability/Performance
+Since we are consuming a consuming 3rd party service, I need to ensure that it does not affect my service performance.
+Therefore I want to decouple my service's performance from Github's availability. 
+I'm feeling more concerned about this than about the own service performance. This is why I've decided to focus on 
+providing this 3rd party service isolation over adding authentication to GitHub client or asynchrony, parallelism to my service.
+Said this, I need a mechanism that will take the most from the concepts of client cache and fallback (from circuit breakers scope).
+The idea is, for properly formed requests, the service will always consume GitHub first. If it fails or time outs, then 
+the response will be retrieved from the cache, if exists.
+There are several caches available but I prefer, for the purpose of this exercise, create my own cache.
+Also persisting the data (instead of keeping it in memory) sounds completely advisable, but I will keep it 
+out of the scope of this exercise.
+
 ## How to build and run the service
 The service has an embedded Tomcat server available at por ```8080```.
 To test the service, just type:
@@ -86,5 +98,6 @@ Search API returns maximum 100 results per page
 
 ### Specific Rate limit for Github search API
 
-The Github Search API has a custom rate limit. For requests using Basic Authentication, OAuth, or client ID and secret, you can make up to 30 requests per minute. For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.
+The Github Search API has a custom rate limit. For requests using Basic Authentication, OAuth, or client ID and secret, 
+you can make up to 30 requests per minute. For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.
 

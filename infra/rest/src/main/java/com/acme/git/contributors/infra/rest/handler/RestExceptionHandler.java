@@ -41,6 +41,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(buildApiErrorResponse(ex.getResponseBodyAsString()));
         return errorResponseEntity;
     }
+    @ExceptionHandler(HttpClientErrorException.NotFound.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ResponseEntity<ApiError> handleRestClientException(HttpClientErrorException.NotFound ex) {
+
+//        InMemoryRepository.findById();
+
+        ResponseEntity<ApiError> errorResponseEntity = ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(buildApiErrorResponse(ex.getResponseBodyAsString()));
+        return errorResponseEntity;
+    }
 
     @ExceptionHandler(RestClientException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)

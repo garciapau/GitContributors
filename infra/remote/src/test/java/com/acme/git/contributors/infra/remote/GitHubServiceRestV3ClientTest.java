@@ -31,9 +31,9 @@ public class GitHubServiceRestV3ClientTest {
     @Before
     public void setUp() {
         restTemplate = Mockito.mock(RestTemplate.class);
-        gitServiceClient = new GitHubServiceRestV3Client(restTemplate);
+        gitServiceClient = new GitHubServiceRestV3Client(restTemplate, gitHubSearchUrl);
         // Using reflection test util to avoid SpringRunner for a unit test
-        ReflectionTestUtils.setField(gitServiceClient, "githubUrl", gitHubSearchUrl);
+//        ReflectionTestUtils.setField(gitServiceClient, "githubUrl", gitHubSearchUrl);
     }
 
     @Test

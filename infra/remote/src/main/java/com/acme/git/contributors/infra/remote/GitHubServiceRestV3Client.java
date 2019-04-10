@@ -1,11 +1,13 @@
 package com.acme.git.contributors.infra.remote;
 
 import com.acme.git.contributors.application.domain.Contributor;
-import com.acme.git.contributors.application.exception.APIRateLimitExceededException;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,8 +20,6 @@ import java.util.stream.StreamSupport;
 public class GitHubServiceRestV3Client implements GitServiceClient {
     private static final String SORTED_BY_REPOSITORIES = "repositories";
     private static final String SORTED_DESC = "desc";
-    private static final int INITIAL_PAGE = 1;
-    private static final int MAX_USERS_PER_PAGE = 50;
     private static final String TYPE_USER = "user";
     private static final String ACCEPTED_HEADER_GITHUB_V3_JSON = "application/vnd.github.v3+json";
     private static final String USER_AGENT_CLIENT = "GitContributors";
@@ -28,8 +28,9 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
     @Value("${github.url}")
     private String githubUrl;
 
-    public GitHubServiceRestV3Client(RestTemplate restTemplate) {
+    public GitHubServiceRestV3Client(RestTemplate restTemplate, String serviceUrl) {
         this.restTemplate = restTemplate;
+        this.githubUrl = serviceUrl;
     }
 
     @Override
