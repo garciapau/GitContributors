@@ -1,9 +1,7 @@
 package com.acme.git.contributors.remote;
 
-import com.acme.git.contributors.application.domain.Contributor;
-
-import java.util.List;
+import com.acme.git.contributors.application.domain.ContributorsOfCity;
 
 public interface GitServiceClient {
-    List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults);
+    ContributorsOfCity getContributorsByCity(String city, Integer initialPage, Integer maxResults);
 }

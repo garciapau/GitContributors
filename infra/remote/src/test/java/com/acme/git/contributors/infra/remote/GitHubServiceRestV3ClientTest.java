@@ -1,6 +1,6 @@
 package com.acme.git.contributors.infra.remote;
 
-import com.acme.git.contributors.application.domain.Contributor;
+import com.acme.git.contributors.application.domain.ContributorsOfCity;
 import com.acme.git.contributors.infra.cache.repository.InMemoryContributorCache;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,22 +17,24 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class GitHubServiceRestV3ClientTest {
-    private static final String gitHubSearchUrl = "https://api.github.com/search/users?q=type:user+location:Barcelona&page=1&per_page=50&sort=repositories&order=desc";
+    private static final String gitHubSearchUrl = "http://NotUsedSinceItIsMocked";
+    private static final String EXISTING_CITY = "Barcelona";
+    private static final String NON_EXISTING_CITY = "WrongCity";
+    private static final int INITIAL_PAGE = 1;
+    private static final int MAX_RESULTS = 50;
     private GitServiceClient gitServiceClient;
     private RestTemplate restTemplate;
-    private InMemoryContributorCache inMemoryContributorCache;
 
     @Before
     public void setUp() {
         restTemplate = Mockito.mock(RestTemplate.class);
-        inMemoryContributorCache = Mockito.mock(InMemoryContributorCache.class);
+        InMemoryContributorCache inMemoryContributorCache = Mockito.mock(InMemoryContributorCache.class);
         gitServiceClient = new GitHubServiceRestV3Client(restTemplate, gitHubSearchUrl, inMemoryContributorCache);
     }
 
@@ -41,9 +43,9 @@ public class GitHubServiceRestV3ClientTest {
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(buildMockGitResponseWithUsers(50));
 
-        List<Contributor> contributors = gitServiceClient.getContributorsByCity("Barcelona", 1, 50);
-        Assert.assertFalse(contributors.isEmpty());
-        Assert.assertEquals(50, contributors.size());
+        ContributorsOfCity contributorsByCity = gitServiceClient.getContributorsByCity(EXISTING_CITY, INITIAL_PAGE, MAX_RESULTS);
+        Assert.assertFalse(contributorsByCity.getContributors().isEmpty());
+        Assert.assertEquals(50, contributorsByCity.getContributors().size());
     }
 
     @Test
@@ -51,16 +53,9 @@ public class GitHubServiceRestV3ClientTest {
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
             .thenReturn(buildMockGitResponseWithUsers(0));
 
-        List<Contributor> contributors = gitServiceClient.getContributorsByCity("WrongCity", 1, 50);
-        Assert.assertTrue(contributors.isEmpty());
-        Assert.assertEquals(0, contributors.size());
-    }
-
-    private ResponseEntity<JsonNode> buildMockGitResponseRateLimitExceeded() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        InputStream is = Test.class.getResourceAsStream("/jsonMockResponses/mockResponseRateLimitExceeded.json");
-        JsonNode mockResponse = mapper.readTree(is);
-        return new ResponseEntity<>(mockResponse, HttpStatus.FORBIDDEN);
+        ContributorsOfCity contributorsByCity = gitServiceClient.getContributorsByCity(NON_EXISTING_CITY, INITIAL_PAGE, MAX_RESULTS);
+        Assert.assertTrue(contributorsByCity.getContributors().isEmpty());
+        Assert.assertEquals(0, contributorsByCity.getContributors().size());
     }
 
     private ResponseEntity<JsonNode> buildMockGitResponseWithUsers(int numberOfUsers) throws IOException {

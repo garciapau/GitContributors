@@ -1,6 +1,8 @@
 package com.acme.git.contributors.infra.remote;
 
 import com.acme.git.contributors.application.domain.Contributor;
+import com.acme.git.contributors.application.domain.ContributorsOfCity;
+import com.acme.git.contributors.application.domain.ContributorsOfCitySource;
 import com.acme.git.contributors.infra.cache.repository.InMemoryContributorCache;
 import com.acme.git.contributors.remote.GitServiceClient;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +15,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,23 +40,27 @@ public class GitHubServiceRestV3Client implements GitServiceClient {
     }
 
     @Override
-    public List<Contributor> getContributorsByCity(String city, Integer initialPage, Integer maxResults) {
+    public ContributorsOfCity getContributorsByCity(String city, Integer initialPage, Integer maxResults) {
         List<Contributor> contributors;
         try {
             contributors = parseResponseIntoContributorsList(callGithubService(city, initialPage, maxResults));
-            inMemoryContributorCache.saveContributorsOfCity(city, contributors);
-            return contributors;
         } catch (RestClientException e) {
-            System.out.println(" -------- Looking for fallback......");
-            contributors = inMemoryContributorCache.getContributorsByCity(city);
-            if (contributors.isEmpty()) {
-                System.out.println(" -------- NOT found in cache -------");
-                throw e;
-            } else {
-                System.out.println(" -------- FOUND in cache -------");
-                return contributors;
-            }
+            return fallback_GetContributorsOfCity_ToCache(city, e);
         }
+        inMemoryContributorCache.saveContributorsOfCity(city, contributors);
+        return buildContributorsOfCity(city, contributors, ContributorsOfCitySource.REMOTE_SERVICE);
+    }
+
+    private ContributorsOfCity fallback_GetContributorsOfCity_ToCache(String city, RestClientException e) {
+        // Fallback - Look for it in the cache. When not found in cache, just propagate the error
+        return inMemoryContributorCache.getContributorsByCity(city).orElseThrow(() -> e);
+    }
+
+    private ContributorsOfCity buildContributorsOfCity(String city, List<Contributor> contributors, ContributorsOfCitySource remoteService) {
+        return new ContributorsOfCity.Builder()
+                .setCity(city)
+                .setSource(remoteService)
+                .setContributors(contributors).build();
     }
 
     private List<Contributor> parseResponseIntoContributorsList(ResponseEntity<JsonNode> response) {

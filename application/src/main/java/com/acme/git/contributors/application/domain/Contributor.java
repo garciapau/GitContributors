@@ -8,9 +8,6 @@ public class Contributor {
         this.name = name;
     }
 
-    public Contributor() {
-    }
-
     public String getName() {
         return name;
     }
